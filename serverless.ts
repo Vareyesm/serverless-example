@@ -1,7 +1,7 @@
 import type { AWS } from '@serverless/typescript';
 
 const serverlessConfiguration: AWS = {
-  service: 'serverless-test-1',
+  service: 'serverless-example',
   frameworkVersion: '2',
   custom: {
     webpack: {
@@ -20,20 +20,24 @@ const serverlessConfiguration: AWS = {
     },
     environment: {
       AWS_NODEJS_CONNECTION_REUSE_ENABLED: '1',
+      DYNAMO_TABLE: 'serverless-example',
     },
+    iamRoleStatements: [
+      {
+        Effect: 'Allow',
+        Action: [
+          'dynamodb:Query',
+          'dynamodb:Scan',
+          'dynamodb:GetItem',
+          'dynamodb:PutItem',
+          'dynamodb:UpdateItem',
+          'dynamodb:DeleteItem'
+        ],
+        Resource: 'arn:aws:dynamodb:us-west-2:*:table/serverless-example'
+      }
+    ]
   },
   functions: {
-    hello: {
-      handler: 'handler.hello',
-      events: [
-        {
-          http: {
-            method: 'get',
-            path: 'hello',
-          }
-        }
-      ]
-    },
     personaSwapi: {
       handler: 'src/functions/swapi_persona/obtener_persona.persona',
       events: [
@@ -55,6 +59,55 @@ const serverlessConfiguration: AWS = {
           }
         }
       ]
+    },
+    crearAutomovil: {
+      handler: 'src/functions/automovil/crear_automovil.automovil',
+      events: [
+        {
+          http: {
+            method: 'post',
+            path: 'automoviles'
+          }
+        }
+      ]
+    },
+    obtenerAutomovil: {
+      handler: 'src/functions/automovil/obtener_automovil.automovil',
+      events: [
+        {
+          http: {
+            method: 'get',
+            path: 'automoviles/{automovilId}'
+          }
+        }
+      ]
+    }
+  },
+  resources: {
+    Resources: {
+      PersonaDynamoDbTable: {
+        Type: 'AWS::DynamoDB::Table',
+        DeletionPolicy: 'Retain',
+        Properties: {
+          AttributeDefinitions: [
+            {
+              AttributeName: 'id',
+              AttributeType: 'S'
+            }
+          ],
+          KeySchema:[
+            {
+              AttributeName: 'id',
+              KeyType: 'HASH'
+            }
+          ],
+          ProvisionedThroughput: {
+            ReadCapacityUnits: 1,
+            WriteCapacityUnits: 1
+          },
+          TableName: 'serverless-example'
+        }
+      }
     }
   }
 }

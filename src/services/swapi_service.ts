@@ -19,7 +19,7 @@ export class SwapiService {
         } catch (error) {
             console.log(error);
             respuestaAPI.httpStatusCode = 500;
-            respuestaAPI.mensaje = error;
+            respuestaAPI.mensajes.push(error);
         }
 
         return respuestaAPI;
@@ -35,7 +35,7 @@ export class SwapiService {
                 })
         } catch (error) {
             respuestaAPI.httpStatusCode = 500;
-            respuestaAPI.mensaje = error;
+            respuestaAPI.mensajes.push(error);
         }
 
         return respuestaAPI;
