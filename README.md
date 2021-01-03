@@ -91,7 +91,17 @@ Obtener personas desde SWAPI `GET /persona-swapi/`
     ```
 
 Crear vehiculo desde DynamoDB `POST /automoviles/`
-- Respuesta:
+- Body:
+    ```
+    {
+        "nombre": "Yaris",
+        "altura": "1.25",
+        "peso": "123.25",
+        "color": "Rojo",
+        "anhoFabricacion": "2015"
+    }
+    ```
+- Respuesta Correcta:
     ```
     {
         "respuesta": 
@@ -100,6 +110,23 @@ Crear vehiculo desde DynamoDB `POST /automoviles/`
             "mensajes": [],
             "httpStatusCode": 201,
             "resultado": "Se ha creado correctamente el registro de código 670b9562-b30d-52d5-b827-655787665500"
+        }
+    }
+    ```
+- Respuesta de bad request:
+    ```
+    {
+        "respuesta": 
+        {
+            "esCorrecto": false,
+            "mensajes": [
+                "El campo nombre es requerido",
+                "El campo altura es requerido",
+                "El campo peso es requerido",
+                "El campo color es requerido",
+                "El campo anhoFabricacion es requerido"
+            ],
+            "httpStatusCode": 400
         }
     }
     ```
